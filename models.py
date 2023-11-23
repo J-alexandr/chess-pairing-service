@@ -26,6 +26,14 @@ class Player:
     def __str__(self):
         return f"{self.name} {self.surname} {self.team}"
 
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'surname': self.surname,
+            'class_list_number': self.class_list_number,
+            'team': self.team
+        }
+
 
 class Room:
     def __init__(self, room_number):
@@ -117,7 +125,7 @@ class Tournament:
         self.num_rounds = num_rounds
         self.status = 'Initialized'
         self.teams = []
-        self.pairings = []
+        # self.pairings = []
         self.results = {}
         self.rooms = []
 
@@ -172,11 +180,11 @@ class Tournament:
                 room.add_players(player)  # Add the player to the current room
                 player_index += 1  # Move to the next player
 
-    def start_tournament(self) -> None:
+    def start_tournament(self, num_rooms) -> None:
         player_pool = self.create_player_pool_for_rooms()  # generate a randomized pool of players
-        num_rooms = suggest_number_of_rooms(len(player_pool))
-        print(f"Suggeted Number Of Rooms is: {num_rooms}")
-        num_rooms = prompt_for_num_rooms(num_rooms)  # get number of rooms as input from user
+        # num_rooms = suggest_number_of_rooms(len(player_pool))
+        # print(f"Suggeted Number Of Rooms is: {num_rooms}")
+        # num_rooms = prompt_for_num_rooms(num_rooms)  # get number of rooms as input from user
 
         # Create room(s)
         for i in range(num_rooms):
@@ -211,12 +219,12 @@ class Tournament:
                 room.reset_pairs()
 
                 # Update the results dict
-                for outcome in outcomes:
-                    for key, value in outcome.items():
-                        self.results[key]['rounds_played'] += 1
-                        self.results[key]['score'] += value
-                        self.results[key]['white'] = room.color_counts[key]['white']
-                        self.results[key]['black'] = room.color_counts[key]['black']
+                for game_outcome in outcomes:
+                    for player, score in game_outcome.items():
+                        self.results[player]['rounds_played'] += 1
+                        self.results[player]['score'] += score
+                        self.results[player]['white'] = room.color_counts[player]['white']
+                        self.results[player]['black'] = room.color_counts[player]['black']
 
         # pprint.pprint(self.results)
 

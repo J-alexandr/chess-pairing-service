@@ -115,7 +115,7 @@ def main():
 
     export_ongoing_tournament(tournament.teams, tournament.name)
     print(tournament.teams)
-    tournament.start_tournament()
+    tournament.start_tournament(1)
     tournament.play_rounds()
     export_results(tournament.results)
 
