@@ -117,4 +117,5 @@ def endpoint1():
 
 
 if __name__ == '__main__':
+    print("Application build 1.0.0")
     app.run(debug=True)
