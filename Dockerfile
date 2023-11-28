@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Define the command to run your application
-CMD ["python", "web.py"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
