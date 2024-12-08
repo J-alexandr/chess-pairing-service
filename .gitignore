@@ -1,4 +1,8 @@
-./teams
-./.idea
+teams
+build
+chess-pair-env
+dist
+.idea
 *.iml
 *.csv
+web.spec
