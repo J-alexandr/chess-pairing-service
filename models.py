@@ -1,12 +1,11 @@
 import csv
 import time
 from abc import ABC, abstractmethod
-import pprint
 import random
-from typing import List, Tuple, AnyStr, Dict
+from typing import List, AnyStr, Dict
 from itertools import zip_longest
 
-from utils import suggest_number_of_rooms, prompt_for_num_rooms, pick_positions, check_matching_conditions, simulate_match, export_round_tournament
+from utils import pick_positions, check_matching_conditions, simulate_match, export_round_tournament
 
 
 class Player:
@@ -259,52 +258,3 @@ class PairingAlgorithm(ABC):
 def sort_players_by_score(player_list: List, results: Dict):
     sorted_players = sorted(player_list, key=lambda player: results[str(player)]['score'], reverse=True)
     return sorted_players
-
-
-def test_sort_players_by_score():
-    # Create a Room object
-    room = Room("Room 1")
-
-    # Add players to the room
-    players = [
-        Player("E3", "SE3", "Team5_Name", 8),
-        Player("E9", "SE9", "Team5_Name", 8),
-        Player("E4", "SE4", "Team5_Name", 8),
-        Player("E10", "SE10", "Team5_Name", 8),
-    ]
-    for player in players:
-        room.add_players(player)
-
-    # Assign scores to players
-    scores = [6, 4, 8, 5]  # Example scores, you can modify them as needed
-    tournament_results = {}
-    for i, player in enumerate(room.players):
-        tournament_results[str(player)] = {
-            'black': 0,
-            'rounds_played': 2,
-            'score': scores[i],
-            'white': 2
-        }
-    tournament = Tournament('EPL', 3)
-    tournament.results = tournament_results
-    print(tournament.results)
-
-    # Sort players by score
-    sorted_players = sort_players_by_score(room, tournament.results)
-
-    # Verify the sorting results
-    expected_order = [players[2], players[0], players[3], players[1]]  # Corrected expected order based on the assigned scores
-
-    assert sorted_players == expected_order
-    print("Test passed!")
-
-
-def main():
-    # tournament = Tournament('Arsenal', 4)
-    # print(tournament)
-    # Run the test
-    test_sort_players_by_score()
-
-
-if __name__ == '__main__':
-    main()

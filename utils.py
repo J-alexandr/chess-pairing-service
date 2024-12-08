@@ -122,15 +122,3 @@ def suggest_number_of_rooms(size):
     else:
         return max(1, size // 50)
 
-
-if __name__ == '__main__':
-    # x = prompt_for_num_rooms(1)
-    # print(x)
-    data = [
-        {'Name_Team3_Player4 Surname_Team3_Player4 Team3_Name': {'black': 0, 'rounds_played': 1, 'score': 3,
-                                                                 'white': 1}},
-        {'Name_Team3_Player3 Surname_Team3_Player3 Team3_Name': {'black': 1, 'rounds_played': 1, 'score': 0,
-                                                                 'white': 0}}
-        # Add more dictionaries to the list if needed
-    ]
-    export_results(data=data)
