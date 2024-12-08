@@ -1,16 +1,15 @@
-# from models import Player, Tournament, Room, Team
 import csv
 from typing import Dict, List, Tuple
 
 
-def check_matching_conditions(p1, p2, cc: Dict, previous_pairs: List[Tuple]):
+def check_matching_conditions(p1, p2, color_counts: Dict, previous_pairs: List[Tuple]):
     if p1.team == p2.team:
         return False
     elif (p1, p2) in previous_pairs or (p2, p1) in previous_pairs:
         return False
-    elif (cc[str(p1)]['white'] - cc[str(p1)]['black']) >= 2 and (cc[str(p2)]['white'] - cc[str(p2)]['black']) >= 2:
+    elif (color_counts[str(p1)]['white'] - color_counts[str(p1)]['black']) >= 2 and (color_counts[str(p2)]['white'] - color_counts[str(p2)]['black']) >= 2:
         return False
-    elif (cc[str(p1)]['black'] - cc[str(p1)]['white']) >= 2 and (cc[str(p2)]['black'] - cc[str(p2)]['white']) >= 2:
+    elif (color_counts[str(p1)]['black'] - color_counts[str(p1)]['white']) >= 2 and (color_counts[str(p2)]['black'] - color_counts[str(p2)]['white']) >= 2:
         return False
     else:
         return True
