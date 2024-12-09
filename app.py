@@ -111,8 +111,8 @@ def generatePairings():
         white = pair[0].to_dict()
         black = pair[1].to_dict()
         response.append({
-            "white": white,
-            "black": black
+            "white": white['name'],
+            "black": black['name']
         })
 
     json_response = jsonify(response)
