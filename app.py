@@ -40,13 +40,11 @@ def parse_match(match_json):
     return {
         'white': {
             'name': white.split('|.|')[0],
-            'surname': white.split('|.|')[1],
-            'team_name': white.split('|.|')[2],
+            'team_name': white.split('|.|')[1],
         },
         'black': {
             'name': black.split('|.|')[0],
-            'surname': black.split('|.|')[1],
-            'team_name': black.split('|.|')[2],
+            'team_name': black.split('|.|')[1],
         }
     }
 
@@ -78,8 +76,8 @@ def insert_tournament_data(tournament: Tournament, players_scores, previous_matc
         tournament.results[score.player]['score'] = score.score
 
     for match in previous_matches:
-        white = find_player(tournament.teams, match['white']['name'], match['white']['surname'], match['white']['team_name'])
-        black = find_player(tournament.teams, match['black']['name'], match['black']['surname'], match['black']['team_name'])
+        white = find_player(tournament.teams, match['white']['name'], match['white']['name'], match['white']['team_name'])
+        black = find_player(tournament.teams, match['black']['name'], match['black']['name'], match['black']['team_name'])
         pair = (white, black)
         tournament.rooms[0].previous_matches.append(pair)
 
