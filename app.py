@@ -87,8 +87,9 @@ def insert_tournament_data(tournament: Tournament, players_scores, previous_matc
 
 
 @app.route('/pair', methods=['POST'])
-def endpoint1():
+def generatePairings():
     json_data = request.json
+    print(f"API request: {json_data}")
 
     num_rounds = int(json_data.get('rounds'))
     players_scores = [parse_scores(score_json) for score_json in json_data.get('scores')]
@@ -113,9 +114,12 @@ def endpoint1():
             "white": white,
             "black": black
         })
-    return jsonify(response)
+
+    json_response = jsonify(response)
+    print(f"API response: {json_response.json}")
+    return json_response
 
 
 if __name__ == '__main__':
-    print("Application build 1.0.0")
+    print("Application build 1.0.1")
     app.run(debug=True)

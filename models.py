@@ -114,7 +114,7 @@ class Team:
         return iter(self.players)
 
     def __repr__(self):
-        return f"Team(name='{self.name}', players='{len(self.players)}'"
+        return f"Team(name='{self.name}', players='{len(self.players)}')"
 
 
 class Tournament:
