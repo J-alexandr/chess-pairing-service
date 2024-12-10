@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-from models import Player, Tournament, Team
+from models import Player, Tournament, Team, Room
 
 app = Flask(__name__)
 
@@ -23,6 +23,20 @@ def parse_team(team_json):
         player = Player(player_json.get('name'), player_json.get('surname'), team_name, cln)
         players.append(player)
     return Team(team_name, players)
+
+
+def extract_all_players(teams):
+    all_players = []
+    for team in teams:
+        all_players.extend(team.players)
+    return all_players
+
+
+def convert_to_dict(player_scores: list[PlayerScore]):
+    player_scores_dict = {}
+    for player_score in player_scores:
+        player_scores_dict[player_score.player] = player_score.__dict__
+    return player_scores_dict
 
 
 def parse_scores(game_json):
@@ -89,28 +103,22 @@ def generatePairings():
     json_data = request.json
     print(f"API request: {json_data}")
 
-    num_rounds = int(json_data.get('rounds'))
-    players_scores = [parse_scores(score_json) for score_json in json_data.get('scores')]
+    players_scores = convert_to_dict([parse_scores(score_json) for score_json in json_data.get('scores')])
     previous_matches = [parse_match(match_json) for match_json in json_data.get('previous_matches')]
     teams = [parse_team(team_json) for team_json in json_data.get('teams')]
-    tournament = create_tournament(teams, num_rounds)
 
-    tournament.start_tournament(1)
-
-    insert_tournament_data(tournament, players_scores, previous_matches)
-
-    # tournament.play_rounds()
-
-    tournament.rooms[0].sort_player_list_by_score(key=tournament.results)
-    tournament.rooms[0].create_pairs()
+    room = Room(1)
+    room.players = extract_all_players(teams)
+    room.previous_matches = previous_matches
+    room.color_counts = players_scores
+    room.sort_player_list_by_score(players_scores)
+    room.create_pairs()
 
     response = []
-    for pair in tournament.rooms[0].pairs:
-        white = pair[0].to_dict()
-        black = pair[1].to_dict()
+    for pair in room.pairs:
         response.append({
-            "white": white['name'],
-            "black": black['name']
+            "white": pair[0].to_dict()['name'],
+            "black": pair[1].to_dict()['name']
         })
 
     json_response = jsonify(response)

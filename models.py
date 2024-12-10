@@ -79,9 +79,9 @@ class Room:
                 else:
                     continue
 
-    def simulate_match(self, round_number: int, tournament_name: str, room_number: int, key: List) -> List[Dict]:
+    def simulate_match(self, round_number: int, tournament_name: str, room_number: int, scores: List) -> List[Dict]:
         outcomes = []
-        self.sort_player_list_by_score(key=key)
+        self.sort_player_list_by_score(scores=scores)
         self.create_pairs()  # generate pairs
         export_round_tournament(self.pairs, round_number, tournament_name, room_number)
         for pair in self.pairs:
@@ -90,9 +90,9 @@ class Room:
             self.previous_matches.append(pair)
         return outcomes
 
-    def sort_player_list_by_score(self, key):
-        self.players = sort_players_by_score(self.players, key)
-        print(self.players)
+    def sort_player_list_by_score(self, scores):
+        self.players = sort_players_by_score(self.players, scores)
+        print(f"Players sorted by score: {self.players}")
 
     def post_init(self):
         for player in self.players:
@@ -141,7 +141,6 @@ class Tournament:
         for items in zip_longest(*self.teams):
             for item in items:
                 if item is not None:
-                    print(str(item))
                     player_pool.append(item)
         return player_pool
 
@@ -214,7 +213,7 @@ class Tournament:
                 print(f'\nROUND:{i}, ROOM:{room_num + 1} \n')
                 # room.sort_player_list_by_score(self.results)
                 # export_round_tournament(room.pairs, i, self.name, room_num + 1)  # Export pairing to csv file
-                outcomes = room.simulate_match(i, tournament_name=self.name, room_number=room_num + 1, key=self.results)
+                outcomes = room.simulate_match(i, tournament_name=self.name, room_number=room_num + 1, scores=self.results)
                 room.reset_pairs()
 
                 # Update the results dict
@@ -255,6 +254,6 @@ class PairingAlgorithm(ABC):
         pass
 
 
-def sort_players_by_score(player_list: List, results: Dict):
-    sorted_players = sorted(player_list, key=lambda player: results[str(player)]['score'], reverse=True)
+def sort_players_by_score(player_list: List, scores: Dict):
+    sorted_players = sorted(player_list, key=lambda player: scores[str(player)]['score'], reverse=True)
     return sorted_players
