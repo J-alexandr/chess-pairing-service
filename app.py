@@ -1,8 +1,13 @@
+import logging
+
 from flask import Flask, request, jsonify
 
 from models import Player, Team, Room
 
-app = Flask(__name__)
+pairing_service = Flask(__name__)
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 class PlayerScore:
@@ -57,10 +62,10 @@ def find_player(teams: list[Team], name, surname, team_name):
     return None
 
 
-@app.route('/pair', methods=['POST'])
+@pairing_service.route('/pair', methods=['POST'])
 def generate_pairings():
     json_data = request.json
-    print(f"API request: {json_data}")
+    logger.info(f"API request: {json_data}")
 
     players_scores = convert_to_dict([parse_scores(score_json) for score_json in json_data.get('scores')])
     teams = [parse_team(team_json) for team_json in json_data.get('teams')]
@@ -85,10 +90,10 @@ def generate_pairings():
         })
 
     json_response = jsonify(response)
-    print(f"API response: {json_response.json}")
+    logger.info(f"API response: {json_response.json}")
     return json_response
 
 
 if __name__ == '__main__':
-    print("Application build 1.0.1")
-    app.run(debug=True)
+    logger.info("Application build 1.1.0")
+    pairing_service.run(debug=True)
