@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Define the command to run your application
-CMD ["gunicorn", "-w", "4", "-b", "127.0.0.1:5000", "app:pairing_service"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:pairing_service"]
