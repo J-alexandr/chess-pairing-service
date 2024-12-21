@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-from models import Player, Tournament, Team, Room
+from models import Player, Team, Room
 
 app = Flask(__name__)
 
@@ -48,28 +48,6 @@ def parse_scores(game_json):
     return PlayerScore(player, white, black, score, rounds_played)
 
 
-def parse_match(match_json):
-    white = match_json.get('white')
-    black = match_json.get('black')
-    return {
-        'white': {
-            'name': white.split('|.|')[0],
-            'team_name': white.split('|.|')[1],
-        },
-        'black': {
-            'name': black.split('|.|')[0],
-            'team_name': black.split('|.|')[1],
-        }
-    }
-
-
-def create_tournament(teams: list[Team], num_rounds: int):
-    tournament = Tournament('EPL', num_rounds)
-    for team in teams:
-        tournament.add_team(team)
-    return tournament
-
-
 def find_player(teams: list[Team], name, surname, team_name):
     for team in teams:
         if team.name == team_name:
@@ -79,27 +57,8 @@ def find_player(teams: list[Team], name, surname, team_name):
     return None
 
 
-def insert_tournament_data(tournament: Tournament, players_scores, previous_matches):
-    for score in players_scores:
-        tournament.rooms[0].color_counts[score.player]['white'] = score.white
-        tournament.rooms[0].color_counts[score.player]['black'] = score.black
-
-        tournament.results[score.player]['white'] = score.white
-        tournament.results[score.player]['black'] = score.black
-        tournament.results[score.player]['rounds_played'] = score.rounds_played
-        tournament.results[score.player]['score'] = score.score
-
-    for match in previous_matches:
-        white = find_player(tournament.teams, match['white']['name'], match['white']['name'], match['white']['team_name'])
-        black = find_player(tournament.teams, match['black']['name'], match['black']['name'], match['black']['team_name'])
-        pair = (white, black)
-        tournament.rooms[0].previous_matches.append(pair)
-
-    return tournament
-
-
 @app.route('/pair', methods=['POST'])
-def generatePairings():
+def generate_pairings():
     json_data = request.json
     print(f"API request: {json_data}")
 
