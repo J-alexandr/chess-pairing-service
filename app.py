@@ -104,8 +104,12 @@ def generatePairings():
     print(f"API request: {json_data}")
 
     players_scores = convert_to_dict([parse_scores(score_json) for score_json in json_data.get('scores')])
-    previous_matches = [parse_match(match_json) for match_json in json_data.get('previous_matches')]
     teams = [parse_team(team_json) for team_json in json_data.get('teams')]
+    previous_matches = [
+        (find_player(teams, match['white'].split('|.|')[0], match['white'].split('|.|')[0], match['white'].split('|.|')[1]),
+         find_player(teams, match['black'].split('|.|')[0], match['black'].split('|.|')[0], match['black'].split('|.|')[1]))
+        for match in json_data.get('previous_matches')
+    ]
 
     room = Room(1)
     room.players = extract_all_players(teams)
