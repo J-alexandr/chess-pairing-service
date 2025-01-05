@@ -1,4 +1,5 @@
 import logging
+import random
 
 from flask import Flask, request, jsonify
 
@@ -34,6 +35,7 @@ def extract_all_players(teams):
     all_players = []
     for team in teams:
         all_players.extend(team.players)
+    random.shuffle(all_players)
     return all_players
 
 
