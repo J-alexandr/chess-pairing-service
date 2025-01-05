@@ -1,11 +1,10 @@
 import csv
 import time
-from abc import ABC, abstractmethod
 import random
 from typing import List, AnyStr, Dict
 from itertools import zip_longest
 
-from utils import pick_positions, check_matching_conditions, simulate_match, export_round_tournament
+from utils import pick_positions, check_matching_conditions, simulate_match, export_round_tournament, sort_players_by_score
 
 
 class Player:
@@ -144,27 +143,6 @@ class Tournament:
                     player_pool.append(item)
         return player_pool
 
-    def generate_pairings(self):
-        # Generate pairings logic goes here
-        pass
-
-    def input_results(self, round_num, results):
-        # Update round results based on user input
-        # self.results.append(results)
-        pass
-
-    def export_pairings(self):
-        # Export pairings to a file
-        pass
-
-    def export_round_results(self, round_num):
-        # Export round results to a file
-        pass
-
-    def export_team_scores(self):
-        # Calculate and export team scores to a file
-        pass
-
     def populate_room(self, player_pool) -> None:
         # Initialize index variable
         player_index = 0
@@ -246,14 +224,3 @@ class Tournament:
 
     def __repr__(self):
         return f"Tournament(name='{self.name}', num_teams={len(self.teams)}, num_rounds={self.num_rounds})"
-
-
-class PairingAlgorithm(ABC):
-    @abstractmethod
-    def generate_pairings(self, tournament):
-        pass
-
-
-def sort_players_by_score(player_list: List, scores: Dict):
-    sorted_players = sorted(player_list, key=lambda player: scores[str(player)]['score'], reverse=True)
-    return sorted_players

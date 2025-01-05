@@ -121,3 +121,7 @@ def suggest_number_of_rooms(size):
     else:
         return max(1, size // 50)
 
+
+def sort_players_by_score(player_list: List, scores: Dict):
+    sorted_players = sorted(player_list, key=lambda player: scores[str(player)]['score'], reverse=True)
+    return sorted_players
