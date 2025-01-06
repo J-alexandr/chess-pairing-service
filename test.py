@@ -1,6 +1,6 @@
 import unittest
 from models import Player, Room, Tournament, sort_players_by_score
-from utils import check_matching_conditions, export_results
+from utils import check_matching_conditions
 
 
 class TestRoom(unittest.TestCase):
@@ -88,7 +88,7 @@ class TestRoom(unittest.TestCase):
         room.color_counts = scores
         room.sort_player_list_by_score(scores)
         room.create_pairs()
-        self.assertEqual([(self.player1, self.player6), (self.player4, self.player7), (self.player2, self.player5), (self.player3, self.player8)], room.pairs)
+        self.assertEqual([(self.player1, self.player6), (self.player7, self.player4), (self.player5, self.player2), (self.player3, self.player8)], room.pairs)
 
     def test_pair_players(self):
         players = [self.player1, self.player2, self.player3, self.player4, self.player5]

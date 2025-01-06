@@ -4,7 +4,8 @@ import random
 from typing import List, AnyStr, Dict
 from itertools import zip_longest
 
-from utils import pick_positions, check_matching_conditions, simulate_match, export_round_tournament, sort_players_by_score
+from utils import pick_first_player_color, check_matching_conditions, simulate_match, export_round_tournament, sort_players_by_score, prompt_for_num_rooms, \
+    Color, check_last_two_games_colors
 
 
 class Player:
@@ -50,19 +51,23 @@ class Room:
     def create_pairs(self):
         all_players = self.players.copy()
         while len(all_players) >= 2:
-            i = 0
-            first_pick = all_players.pop(i)
+            first_pick = all_players.pop(0)
             pool_size = len(all_players)
             for sample_index in range(pool_size):
-                if check_matching_conditions(first_pick, all_players[sample_index], self.color_counts, self.previous_matches):
+                f_color_score = check_last_two_games_colors(first_pick, self.previous_matches)
+                s_color_score = check_last_two_games_colors(all_players[sample_index], self.previous_matches)
+                total_score = f_color_score + s_color_score
+                if check_matching_conditions(first_pick, all_players[sample_index], self.color_counts, self.previous_matches) and total_score != 2 and total_score != -2:
                     second_pick = all_players.pop(sample_index)
-                    positions = pick_positions(
+                    f_player_color = pick_first_player_color(
                         self.color_counts[str(first_pick)]['white'],
                         self.color_counts[str(first_pick)]['black'],
                         self.color_counts[str(second_pick)]['white'],
-                        self.color_counts[str(second_pick)]['black']
+                        self.color_counts[str(second_pick)]['black'],
+                        f_color_score,
+                        s_color_score
                     )
-                    if positions == 1:
+                    if f_player_color == Color.WHITE:
                         self.add_pairs((first_pick, second_pick))
                         self.color_counts[str(first_pick)]['white'] += 1
                         self.color_counts[str(second_pick)]['black'] += 1
@@ -73,10 +78,11 @@ class Room:
                     break
 
                 elif sample_index == pool_size - 1:
-                    # print(f'COULD NOT MATCH {str(first_pick)} WITH ANY PLAYER')
+                    print(f'COULD NOT MATCH {str(first_pick)} WITH ANY PLAYER')
                     continue
                 else:
                     continue
+
 
     def simulate_match(self, round_number: int, tournament_name: str, room_number: int, scores: List) -> List[Dict]:
         outcomes = []
@@ -159,8 +165,8 @@ class Tournament:
     def start_tournament(self, num_rooms) -> None:
         player_pool = self.create_player_pool_for_rooms()  # generate a randomized pool of players
         # num_rooms = suggest_number_of_rooms(len(player_pool))
-        # print(f"Suggeted Number Of Rooms is: {num_rooms}")
-        # num_rooms = prompt_for_num_rooms(num_rooms)  # get number of rooms as input from user
+        print(f"Suggeted Number Of Rooms is: {num_rooms}")
+        num_rooms = prompt_for_num_rooms(num_rooms)  # get number of rooms as input from user
 
         # Create room(s)
         for i in range(num_rooms):

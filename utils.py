@@ -2,6 +2,34 @@ import csv
 from typing import Dict, List, Tuple
 
 
+class Color:
+    WHITE = -1
+    BLACK = 1
+
+
+def check_last_two_games_colors(player, previous_matches):
+    black_count = 0
+    white_count = 0
+
+    matches = []
+    for match in previous_matches:
+        if player in match:
+            matches.append(match)
+
+    for match in matches[-2:]:
+        if player == match[0]:
+            white_count += 1
+        elif player == match[1]:
+            black_count += 1
+
+    if black_count >= 2:
+        return Color.BLACK
+    elif white_count >= 2:
+        return Color.WHITE
+    else:
+        return 0
+
+
 def check_matching_conditions(p1, p2, color_counts: Dict, previous_pairs: List[Tuple]):
     if p1.team == p2.team:
         return False
@@ -68,11 +96,15 @@ def export_round_tournament(pairs: List, round_number: int, tournament_name: str
             writer.writerow([pair[0], pair[1], room_number])
 
 
-def pick_positions(w1, b1, w2, b2):
+def pick_first_player_color(w1, b1, w2, b2, f_color_score: int, s_color_score: int):
+    if f_color_score == Color.BLACK or s_color_score == Color.WHITE:
+        return Color.WHITE
+    elif f_color_score == Color.WHITE or s_color_score == Color.BLACK:
+        return Color.BLACK
     if w1 - b1 < 2 and b2 - w2 < 2:
-        return 1
+        return Color.WHITE
     else:
-        return 2
+        return Color.BLACK
 
 
 def prompt_for_num_rooms(recommended):
